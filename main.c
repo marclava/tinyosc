@@ -27,14 +27,14 @@
 static volatile bool keepRunning = true;
 
 // handle Ctrl+C
-static void sigintHandler(int x) {
+static void sigintHandler() {
   keepRunning = false;
 }
 
 /**
  * A basic program to listen to port 9000 and print received OSC packets.
  */
-int main(int argc, char *argv[]) {
+int main() {
 
   char buffer[2048]; // declare a 2Kb buffer to read packet data into
 
@@ -73,7 +73,6 @@ int main(int argc, char *argv[]) {
         if (tosc_isBundle(buffer)) {
           tosc_bundle bundle;
           tosc_parseBundle(&bundle, buffer, len);
-          const uint64_t timetag = tosc_getTimetag(&bundle);
           tosc_message osc;
           while (tosc_getNextMessage(&bundle, &osc)) {
             tosc_printMessage(&osc);

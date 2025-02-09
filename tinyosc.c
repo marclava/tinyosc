@@ -58,7 +58,7 @@ int tosc_parseMessage(tosc_message *o, char *buffer, const int len) {
 
 // check if first eight bytes are '#bundle '
 bool tosc_isBundle(const char *buffer) {
-  return ((*(const int64_t *) buffer) == htonll(BUNDLE_ID));
+  return ((*(const uint64_t *) buffer) == htonll(BUNDLE_ID));
 }
 
 void tosc_parseBundle(tosc_bundle *b, char *buffer, const int len) {
@@ -114,7 +114,7 @@ uint64_t tosc_getNextTimetag(tosc_message *o) {
 }
 
 float tosc_getNextFloat(tosc_message *o) {
-  // convert from big-endian (network btye order)
+  // convert from big-endian (network byte order)
   const uint32_t i = ntohl(*((uint32_t *) o->marker));
   o->marker += 4;
   return *((float *) (&i));
@@ -173,7 +173,7 @@ void tosc_writeBundle(tosc_bundle *b, uint64_t timetag, char *buffer, const int 
 }
 
 // always writes a multiple of 4 bytes
-static uint32_t tosc_vwrite(char *buffer, const int len,
+static uint32_t tosc_vwrite(char *buffer, const unsigned int len,
     const char *address, const char *format, va_list ap) {
   memset(buffer, 0, len); // clear the buffer
   uint32_t i = (uint32_t) strlen(address);
@@ -309,8 +309,8 @@ void tosc_printMessage(tosc_message *osc) {
       case 'f': printf(" %g", tosc_getNextFloat(osc)); break;
       case 'd': printf(" %g", tosc_getNextDouble(osc)); break;
       case 'i': printf(" %d", tosc_getNextInt32(osc)); break;
-      case 'h': printf(" %lld", tosc_getNextInt64(osc)); break;
-      case 't': printf(" %lld", tosc_getNextTimetag(osc)); break;
+      case 'h': printf(" %ld", tosc_getNextInt64(osc)); break;
+      case 't': printf(" %ld", tosc_getNextTimetag(osc)); break;
       case 's': printf(" %s", tosc_getNextString(osc)); break;
       case 'F': printf(" false"); break;
       case 'I': printf(" inf"); break;
